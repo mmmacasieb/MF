@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Partner 1 · Budget</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-owner="a">
+
+<header class="topbar">
+  <div class="wrap bar">
+    <a class="brand" href="index.html"><span class="logo"></span><b>Our Budget</b></a>
+    <nav class="nav">
+      <a class="active" id="navA" href="index.html">Partner 1</a>
+      <a id="navB" href="partner.html">Partner 2</a>
+    </nav>
+    <div class="bar-right">
+      <button class="who" id="codeChip" data-act="switchHome" title="Household code - tap to change"></button>
+      <span class="sync" id="syncPill"><i></i><em>Connecting</em></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="tabs" id="tabs">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="categories">Categories</button>
+    <button data-tab="transactions">Transactions</button>
+    <button data-tab="plans">Bills &amp; Targets</button>
+    <button data-tab="settings">Settings</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="tab active" id="tab-overview">
+
+    <section class="hero">
+      <div class="hero-main">
+        <span class="eyebrow" id="heroEyebrow">Main money</span>
+        <h1 id="mainMoney">—</h1>
+        <p id="heroSub">Loading…</p>
+        <div class="hero-actions">
+          <button class="btn light" data-act="addIncome">+ Income</button>
+          <button class="btn light" data-act="addExpense">− Expense</button>
+          <button class="btn outline-light" data-act="setBalance">Set balance</button>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span>Income</span><b id="stIncome">—</b><small id="stMonthA"></small></div>
+        <div class="stat"><span>Spent</span><b id="stSpent">—</b><small id="stMonthB"></small></div>
+        <div class="stat"><span>Saved (month)</span><b id="stSaved">—</b><small id="stSavedAll"></small></div>
+        <div class="stat"><span>Bills waiting</span><b id="stDues">—</b><small id="stDuesN"></small></div>
+      </div>
+    </section>
+
+    <div class="month-bar">
+      <button class="icon-btn" data-act="prevMonth" aria-label="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong id="monthLabel"></strong>
+      <button class="icon-btn" data-act="nextMonth" aria-label="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+
+    <section class="card" style="margin-bottom:18px">
+      <div class="card-head">
+        <h2>Calendar</h2>
+        <div class="row">
+          <a class="btn ghost small" id="calOpen" target="_blank" rel="noopener" hidden>Open in new tab</a>
+          <div class="seg" id="calSeg">
+            <button type="button" data-act="calView" data-v="budget" class="active">Budget</button>
+            <button type="button" data-act="calView" data-v="ext" id="calExtBtn" hidden>My calendar</button>
+          </div>
+        </div>
+      </div>
+      <div id="calBudget">
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-detail" id="calDetail"></div>
+      </div>
+      <div id="calExt" hidden>
+        <iframe id="calFrame" title="My calendar"></iframe>
+        <p class="muted" style="margin-top:10px">If this stays blank, your calendar site doesn't allow embedding — use “Open in new tab”.</p>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <div class="card-head"><h2>Where the money went</h2></div>
+        <div class="chart-box"><canvas id="cDonut"></canvas><div class="chart-empty" id="donutEmpty">No spending this month yet</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Income vs spent · 6 months</h2></div>
+        <div class="chart-box"><canvas id="cMonthly"></canvas></div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-head"><h2>Main money · last 30 days</h2></div>
+        <div class="chart-box"><canvas id="cTrend"></canvas></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <div class="card-head"><h2>Budget vs actual</h2></div>
+        <div id="listBudgets"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Daily spending</h2></div>
+        <div class="chart-box" style="height:220px"><canvas id="cDaily"></canvas><div class="chart-empty" id="dailyEmpty">No spending this month yet</div></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <div class="card">
+        <div class="card-head"><h2>Upcoming bills &amp; dues</h2></div>
+        <div id="listDues"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Targets</h2></div>
+        <div id="listTargets"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Recent activity</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Details</th><th>Category</th><th class="r">Amount</th></tr></thead>
+          <tbody id="tblRecent"></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="tab" id="tab-categories">
+    <div class="page-head">
+      <div><h2>Categories</h2><span class="muted">Add sub-categories inside any category (e.g. Clothes under Personal Expenses). Monthly budgets are just targets — they never change your main money.</span></div>
+      <button class="btn primary" data-act="addCat">+ New category</button>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+  </section>
+
+  <!-- TRANSACTIONS -->
+  <section class="tab" id="tab-transactions">
+    <div class="page-head">
+      <div><h2>Transactions</h2><span class="muted">Every entry here moves your main money.</span></div>
+      <div class="row">
+        <button class="btn ghost" data-act="addIncome">+ Income</button>
+        <button class="btn primary" data-act="addExpense">− Expense</button>
+      </div>
+    </div>
+    <div class="filters">
+      <input id="fQ" type="search" placeholder="Search notes, categories…">
+      <select id="fCat"></select>
+      <select id="fMonth"></select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Details</th><th>Category</th><th class="r">Amount</th><th></th></tr></thead>
+        <tbody id="tblTx"></tbody>
+      </table>
+    </div>
+    <div class="table-foot" id="txFoot"></div>
+  </section>
+
+  <!-- BILLS & TARGETS -->
+  <section class="tab" id="tab-plans">
+    <div class="stack">
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Bills &amp; dues</h2><span class="muted">Planned payments don't touch your money until you press “Mark paid”.</span></div>
+          <button class="btn primary small" data-act="addBill">+ Add bill</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Bill</th><th>Category</th><th>Due</th><th>Repeats</th><th class="r">Amount</th><th></th></tr></thead>
+            <tbody id="tblBills"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div><h2>Targets</h2><span class="muted">Goals to work toward. Progress here never affects your main money.</span></div>
+          <button class="btn primary small" data-act="addTarget">+ Add target</button>
+        </div>
+        <div class="cat-grid" id="targetGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="tab" id="tab-settings">
+    <div class="stack" id="settingsBox"></div>
+  </section>
+</main>
+
+<footer>Made for two · your money stays separate</footer>
+<input type="file" id="restoreFile" accept="application/json" hidden>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script type="module" src="app.js?v=3"></script>
+</body>
+</html>
